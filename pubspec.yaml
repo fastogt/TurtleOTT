@@ -1,0 +1,62 @@
+name: turtleott
+description: TurtleOTT IPTV/OTT player.
+version: 1.2.2+20
+
+publish_to: none
+
+environment:
+  sdk: ">=3.3.0 <4.0.0"
+
+dependencies:
+  wakelock_plus: ^1.3.1
+  web_socket_channel: ^3.0.3
+  equatable: ^2.0.7
+  google_fonts: ^6.2.1
+  shared_preferences: ^2.5.3
+  video_player_web_hls: ^1.3.0
+  get_it: ^8.0.3
+  numberpicker: ^2.1.2
+  url_launcher: ^6.3.1
+  flutter_bloc: ^9.1.0
+
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  dart_chromecast:
+    git:
+      url: https://github.com/fastogt/dart_chromecast.git
+      ref: master
+  fastotv_device_info:
+    git:
+      url: https://gitlab.com/fastogt/fastotv_device_info.git
+      ref: master
+  flutter_fastotv_common:
+    git:
+      url: https://gitlab.com/fastogt/flutter_fastotv_common.git
+      ref: master
+  crocott_dart:
+    git:
+      url: https://gitlab.com/fastogt/fastocloud_ott/crocott_dart.git
+      ref: main
+  player:
+    git:
+      url: https://gitlab.com/fastogt/flutter_fastotv_player.git
+      ref: main
+
+dev_dependencies:
+  dart_rules:
+    git:
+      url: https://github.com/fastogt/dart_rules.git
+      ref: main
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+  assets:
+    - google_fonts/
+    - install/assets/
+    - install/assets/categories/
+    - install/lang/

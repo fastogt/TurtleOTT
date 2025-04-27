@@ -1,0 +1,12 @@
+include: package:dart_rules/analysis_options.yaml
+
+dart_code_metrics:
+  extends:
+    - recommended
+  rules:
+    - prefer-match-file-name: false
+    - no-empty-block: false
+
+linter:
+  rules:
+    avoid_positional_boolean_parameters: false
