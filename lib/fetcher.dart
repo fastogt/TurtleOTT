@@ -1,4 +1,4 @@
-import 'package:crocott_dart/crocott.dart';
+import 'package:crocott_dart/crocott_api.dart';
 import 'package:crocott_dart/icrocott_player.dart';
 import 'package:fastotv_dart/commands_info.dart';
 import 'package:flutter_common/flutter_common.dart';
@@ -26,7 +26,7 @@ class CrocOTTImpl extends ICrocOTTPlayer {
   }
 }
 
-class Fetcher extends CrocOTT {
+class Fetcher extends CrocOTTAPI {
   Fetcher({required ICrocOTTPlayer impl}) : super(impl: impl);
 
   Future<bool> launchExternalUrl(String url, {LaunchMode mode = LaunchMode.platformDefault}) {
