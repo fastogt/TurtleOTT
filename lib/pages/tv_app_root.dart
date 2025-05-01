@@ -1,4 +1,4 @@
-import 'package:crocott_dart/auth.dart';
+import 'package:crocott_dart/types.dart';
 import 'package:dart_common/dart_common.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

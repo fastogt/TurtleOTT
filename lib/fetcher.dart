@@ -1,5 +1,5 @@
-import 'package:crocott_dart/crocott_api.dart';
-import 'package:crocott_dart/icrocott_player.dart';
+import 'package:crocott_dart/api.dart';
+import 'package:crocott_dart/player.dart';
 import 'package:fastotv_dart/commands_info.dart';
 import 'package:flutter_common/flutter_common.dart';
 import 'package:turtleott/service_locator.dart';

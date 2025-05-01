@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:crocott_dart/error_codes.dart';
+import 'package:crocott_dart/errors.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_common/utils.dart';
