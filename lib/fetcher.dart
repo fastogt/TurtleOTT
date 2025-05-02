@@ -22,7 +22,7 @@ class CrocOTTImpl extends ICrocOTTPlayer {
         arch: device.arch,
         ramTotal: 0,
         ramFree: 0);
-    final project = Project(name: projectName(), version: projectVersion());
+    final project = DeviceProject(name: projectName(), version: projectVersion());
     return ClientInfo(id: did, project: project, os: os, cpuBrand: device.cpuBrand);
   }
 }
