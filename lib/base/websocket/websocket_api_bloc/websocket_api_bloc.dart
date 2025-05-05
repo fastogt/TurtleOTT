@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:developer' as developer;
 
 import 'package:bloc/bloc.dart';
-import 'package:crocott_dart/types.dart';
+import 'package:dart_common/utils.dart';
 
 import 'package:equatable/equatable.dart';
 import 'package:turtleott/base/websocket/websocket/websocket_delegate.dart';
