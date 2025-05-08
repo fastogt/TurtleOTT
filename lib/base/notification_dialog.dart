@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:fastotv_dart/commands_info/notification_text_info.dart';
+import 'package:fastotv_dart/commands_info.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 

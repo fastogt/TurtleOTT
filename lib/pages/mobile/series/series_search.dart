@@ -1,5 +1,4 @@
-import 'package:fastotv_dart/commands_info/package_info.dart';
-import 'package:fastotv_dart/commands_info/serial_info.dart';
+import 'package:fastotv_dart/commands_info.dart';
 import 'package:flutter/material.dart';
 import 'package:turtleott/base/bloc/content_bloc.dart';
 import 'package:turtleott/base/channels/series_stream.dart';

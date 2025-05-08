@@ -1,6 +1,6 @@
 import 'dart:core';
 
-import 'package:fastotv_dart/commands_info/programme_info.dart';
+import 'package:fastotv_dart/commands_info.dart';
 import 'package:flutter/material.dart';
 import 'package:turtleott/base/streams/program_bloc.dart';
 import 'package:turtleott/localization/translations.dart';

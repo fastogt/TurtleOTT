@@ -1,4 +1,4 @@
-import 'package:fastotv_dart/commands_info/vod_info.dart';
+import 'package:fastotv_dart/commands_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_common/localization.dart';
 import 'package:flutter_common/utils.dart';

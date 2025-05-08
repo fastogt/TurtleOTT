@@ -1,4 +1,4 @@
-import 'package:fastotv_dart/commands_info/programme_info.dart';
+import 'package:fastotv_dart/commands_info.dart';
 import 'package:flutter_common/flutter_common.dart';
 import 'package:turtleott/service_locator.dart';
 

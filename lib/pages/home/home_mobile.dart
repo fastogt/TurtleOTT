@@ -1,5 +1,4 @@
 import 'package:fastotv_dart/commands_info.dart';
-import 'package:fastotv_dart/commands_info/package_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_common/flutter_common.dart';

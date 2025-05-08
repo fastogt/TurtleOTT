@@ -4,8 +4,7 @@ import 'dart:async';
 
 import 'package:crocott_dart/types.dart';
 import 'package:dart_common/dart_common.dart';
-import 'package:fastotv_dart/commands_info/device_info.dart';
-import 'package:fastotv_dart/commands_info/ott_server_info.dart';
+import 'package:fastotv_dart/commands_info.dart';
 import 'package:fastotv_dart/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_common/flutter_common.dart';

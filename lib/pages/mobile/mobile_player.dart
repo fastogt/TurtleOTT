@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:dart_chromecast/chromecast.dart';
-import 'package:fastotv_dart/commands_info/playing_url.dart';
+import 'package:fastotv_dart/commands_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_common/flutter_common.dart';
 import 'package:flutter_fastotv_common/chromecast_filler.dart';

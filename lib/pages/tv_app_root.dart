@@ -1,5 +1,5 @@
 import 'package:crocott_dart/types.dart';
-import 'package:dart_common/dart_common.dart';
+import 'package:dart_common/dart_common.dart' show IError, ErrorHttp;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_common/flutter_common.dart';
@@ -40,7 +40,7 @@ class _LoginPageState extends State<TVAppRoot> {
     super.initState();
     final settings = locator<LocalStorageService>();
     final stabledHost = settings.server() ?? SERVER_HOST;
-        final crocott = CrocOTTImpl(
+    final crocott = CrocOTTImpl(
         host: stabledHost,
         onTokenChanged: (Tokens token) {
           _bloc.login(token);

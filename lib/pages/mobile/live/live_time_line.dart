@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:fastotv_dart/commands_info/programme_info.dart';
+import 'package:fastotv_dart/commands_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_common/managers.dart';
 import 'package:turtleott/service_locator.dart';

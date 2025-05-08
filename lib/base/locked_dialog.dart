@@ -1,4 +1,4 @@
-import 'package:fastotv_dart/commands_info/types.dart';
+import 'package:fastotv_dart/commands_info.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_common/flutter_common.dart';
