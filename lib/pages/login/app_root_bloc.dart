@@ -161,7 +161,7 @@ class AppBloc {
   }
 
   void signUP(String? accessToken, String? refreshToken, String? device, bool isCode) async {
-    if (accessToken != null && refreshToken != null && device != null) {
+    if (refreshToken != null && device != null) {
       final tokens = Tokens(refresh: refreshToken, access: accessToken);
       fetcher.setTokens(tokens);
       final info = await fetcher.getServerInfo();
@@ -220,7 +220,7 @@ class AppBloc {
     try {
       _emit(const LoadingAppState(TR_AUTHORIZATION));
       final tokens = await fetcher.login(email, password, device);
-      if (tokens == null) {
+      if (tokens) {
         _emit(ErrorAppState(ErrorHttp(401, TR_ERR_WRONG_LOG_PAS, null)));
         return;
       }
@@ -276,7 +276,7 @@ class AppBloc {
     try {
       _emit(const LoadingAppState(TR_AUTHORIZATION));
       final tokens = await fetcher.loginByCode(code, device);
-      if (tokens == null) {
+      if (tokens) {
         _emit(ErrorAppState(ErrorHttp(401, TR_ERR_WRONG_CODE, null)));
         return;
       }

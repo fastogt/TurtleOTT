@@ -54,10 +54,9 @@ class _AppRootState extends State<MobileAppRoot> {
 
   bool canAutoConnect() {
     final settings = locator<LocalStorageService>();
-    final accessToken = settings.accessToken();
     final refreshToken = settings.refreshToken();
     final device = settings.device();
-    return accessToken != null && refreshToken != null && device != null;
+    return refreshToken != null && device != null;
   }
 
   @override
