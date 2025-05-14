@@ -43,7 +43,7 @@ dependencies:
   player:
     git:
       url: https://gitlab.com/fastogt/flutter_fastotv_player.git
-      ref: main
+      ref: standard
 
 dev_dependencies:
   dart_rules:
