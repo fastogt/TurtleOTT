@@ -48,7 +48,7 @@ class _AppRootState extends State<MobileAppRoot> {
     _bloc = AppBloc(fetcher: fetcher);
     _bloc.hostController.text = stabledHost;
     if (canAutoConnect()) {
-      _bloc.connect(isLoginCode: isLoginCode, context: context);
+      _bloc.connect(isLoginCode: isLoginCode);
     }
   }
 
@@ -140,7 +140,7 @@ class _AppRootState extends State<MobileAppRoot> {
       if (authMode == AuthMode.signUp) {
         return _bloc.registerUser();
       }
-      _bloc.connect(isLoginCode: authMode == AuthMode.codeLogin, context: context);
+      _bloc.connect(isLoginCode: authMode == AuthMode.codeLogin);
       return false;
     }
 

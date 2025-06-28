@@ -1,20 +1,17 @@
-// ignore_for_file: avoid_redundant_argument_values
-
 import 'dart:async';
 
 import 'package:crocott_dart/types.dart';
-import 'package:dart_common/dart_common.dart';
 import 'package:fastotv_dart/commands_info.dart';
 import 'package:fastotv_dart/profile.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_common/flutter_common.dart';
-import 'package:turtleott/constants.dart';
+
 import 'package:turtleott/epg_manager.dart';
 import 'package:turtleott/fetcher.dart';
 import 'package:turtleott/localization/translations.dart';
 import 'package:turtleott/service_locator.dart';
 import 'package:turtleott/shared_prefs.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 final class ErrorUI extends Error {
   static const int kErrInvalidInputHost = -7000;
@@ -32,11 +29,11 @@ class AppState {
   const AppState();
 }
 
-class RegistiredState extends AppState {}
-
 class UnAuthenticateAppState extends AppState {
   const UnAuthenticateAppState();
 }
+
+class RegisteredState extends AppState {}
 
 class LoadingAppState extends AppState {
   final String text;
@@ -55,9 +52,8 @@ class LogOutState extends AppState {
 }
 
 class AuthenticatedAppState extends AppState {
-  final String server;
-  final String device;
-
+  final String server; // save to settings
+  final String device; // save to settings
   final OttServerInfo info;
 
   const AuthenticatedAppState(this.server, this.device, this.info);
@@ -70,9 +66,10 @@ class AppBloc {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final codeController = TextEditingController();
-  final hostController = TextEditingController(text: SERVER_HOST);
-  final TextEditingController firstNameController = TextEditingController();
-  final TextEditingController lastNameController = TextEditingController();
+  late final hostController = TextEditingController(text: fetcher.directHost);
+  final firstNameController = TextEditingController();
+  final lastNameController = TextEditingController();
+
   String get email => emailController.text;
 
   String get password => passwordController.text;
@@ -89,21 +86,15 @@ class AppBloc {
 
   AppBloc({required this.fetcher});
 
-  void start() {
+  void _start() {
     final epg = locator<EpgManager>();
     epg.setEpgHandler((cid) {
       return fetcher.getEpg(cid);
     });
   }
 
-  void login(Tokens tokens) {
-    final settings = locator<LocalStorageService>();
-    settings.setRefreshToken(tokens.refresh);
-    settings.setAccessToken(tokens.access);
-  }
-
-  void connect({required bool isLoginCode, required BuildContext context}) {
-    bool _isUrlValid(String url) {
+  void connect({required bool isLoginCode}) {
+    bool isUrlValid(String url) {
       try {
         final uri = Uri.parse(url);
         return (uri.isScheme('http') || uri.isScheme('https')) && uri.host.isNotEmpty;
@@ -116,9 +107,9 @@ class AppBloc {
     final device = settings.device();
     final accessToken = settings.accessToken();
     final refreshToken = settings.refreshToken();
-    if (_isUrlValid(host)) {
-      fetcher.setHost(host);
-      signUP(accessToken, refreshToken, device, isLoginCode);
+    if (isUrlValid(host)) {
+      fetcher.setHost(host); // setBrand can change host
+      loginWith(accessToken, refreshToken, device, isLoginCode);
     } else {
       _emit(ErrorAppState(ErrorUI.invalidInputHost()));
       return;
@@ -130,27 +121,38 @@ class AppBloc {
       _emit(ErrorAppState(ErrorUI.invalidInputLoginOrPassword()));
       return false;
     }
-    _emit(const LoadingAppState(TR_CONNECTION_SIN_UP));
+
+    _emit(const LoadingAppState(TR_CONNECTION_SIGN_UP));
     fetcher.setHost(host);
-    fetcher.getLocale().then((locale) {
-      fetcher
-          .signupClient(SubscriberSignUpFront(
-              email: email,
-              password: password,
-              firstName: firstNameController.text,
-              lastName: lastName,
-              country: locale.currentCountry,
-              language: locale.currentLanguage))
-          .then((SubProfile profile) {
-        _emit(RegistiredState());
+
+    final resp = fetcher.getLocale();
+    resp.then((locale) {
+      final sign = SubscriberSignUpFront(
+          email: email,
+          password: password,
+          firstName: firstNameController.text,
+          lastName: lastName,
+          country: locale.currentCountry,
+          language: locale.currentLanguage);
+      fetcher.signupClient(sign).then((SubProfile profile) {
+        _emit(RegisteredState());
         return true;
-      }).catchError((error) {
+      }, onError: (error) {
         _emit(ErrorAppState(error));
         return false;
       });
+    }, onError: (error) {
+      _emit(ErrorAppState(error));
+      return false;
     });
 
     return true;
+  }
+
+  void login(Tokens tokens) {
+    final settings = locator<LocalStorageService>();
+    settings.setRefreshToken(tokens.refresh);
+    settings.setAccessToken(tokens.access);
   }
 
   void logout() {
@@ -160,13 +162,22 @@ class AppBloc {
     _emit(LogOutState());
   }
 
-  void signUP(String? accessToken, String? refreshToken, String? device, bool isCode) async {
+  void moveOnHome(String device) {
+    _emit(const LoadingAppState(TR_GET_SERVER_INFO));
+    final res = fetcher.getServerInfo();
+    res.then((info) {
+      _emit(AuthenticatedAppState(fetcher.directHost, device, info));
+      _start();
+    }, onError: (error) {
+      _emit(ErrorAppState(error));
+    });
+  }
+
+  void loginWith(String? accessToken, String? refreshToken, String? device, bool isCode) {
     if (refreshToken != null && device != null) {
       final tokens = Tokens(refresh: refreshToken, access: accessToken);
       fetcher.setTokens(tokens);
-      final info = await fetcher.getServerInfo();
-      _emit(AuthenticatedAppState(fetcher.directHost, device, info));
-      start();
+      moveOnHome(device);
       return;
     }
 
@@ -179,136 +190,92 @@ class AppBloc {
 
   void loginWithPassword(String? device) async {
     if (email.isEmpty || password.isEmpty) {
-      _emit(ErrorAppState(ErrorHttp(401, TR_ERR_WRONG_LOG_PAS, null)));
+      _emit(ErrorAppState(ErrorUI.invalidInputLoginOrPassword()));
       return;
     }
 
     _emit(const LoadingAppState(TR_CONNECTING));
-
     if (device == null) {
+      // that's why we need to save device id, not only tokens, for reset command
       _emit(const LoadingAppState(TR_REQUEST_DEVICES));
-      List<DeviceInfo> devices = [];
       try {
-        devices = await fetcher.getDevices(email, password);
+        final List<DeviceInfo> devices = await fetcher.getDevices(email, password);
+        if (devices.isEmpty) {
+          _emit(const LoadingAppState(TR_REQUEST_NEW_DEVICE));
+          final hwDevice = locator<RuntimeDevice>();
+          final DeviceInfo device = await fetcher.requestDevice(email, password, hwDevice.name);
+          devices.add(device);
+        }
+        device = devices[0].id;
       } catch (error) {
         _emit(ErrorAppState(error));
         return;
       }
-
-      if (devices.isEmpty) {
-        _emit(const LoadingAppState(TR_REQUEST_NEW_DEVICE));
-        try {
-          final hwDevice = locator<RuntimeDevice>();
-          final DeviceInfo device = await fetcher.requestDevice(email, password, hwDevice.name);
-          devices.add(device);
-        } catch (error) {
-          _emit(ErrorAppState(error));
-          return;
-        }
-      }
-
-      if (devices.isNotEmpty) {
-        device = devices[0].id;
-      }
     }
 
-    if (device == null) {
-      _emit(ErrorAppState(ErrorHttp(401, TR_PLEASE_CREATE_DEVICE, null)));
-      return;
-    }
+    _emit(const LoadingAppState(TR_AUTHORIZATION));
+    tryToLoginByEmail(device, 1);
+  }
 
-    try {
-      _emit(const LoadingAppState(TR_AUTHORIZATION));
-      final tokens = await fetcher.login(email, password, device);
-      if (tokens) {
-        _emit(ErrorAppState(ErrorHttp(401, TR_ERR_WRONG_LOG_PAS, null)));
-        return;
+  void tryToLoginByEmail(String device, int redirect) {
+    final res = fetcher.login(email, password, device);
+    res.then((tokens) {
+      if (tokens.origin != null) {
+        fetcher.setHost(tokens.origin!);
       }
-
-      final info = await fetcher.getServerInfo();
-      _emit(AuthenticatedAppState(fetcher.directHost, device, info));
-      start();
-    } catch (error) {
+      moveOnHome(device);
+    }, onError: (error) {
       _emit(ErrorAppState(error));
-    }
+    });
   }
 
   void loginWithCode(String? device) async {
     if (code.isEmpty) {
-      _emit(ErrorAppState(ErrorHttp(401, TR_ERR_WRONG_CODE, null)));
+      _emit(ErrorAppState(ErrorUI.invalidInputCode()));
       return;
     }
 
     _emit(const LoadingAppState(TR_CONNECTING));
-
     if (device == null) {
       _emit(const LoadingAppState(TR_REQUEST_DEVICES));
-      List<DeviceInfo> devices = [];
       try {
-        devices = await fetcher.getDevicesByCode(code);
+        final List<DeviceInfo> devices = await fetcher.getDevicesByCode(code);
+        if (devices.isEmpty) {
+          _emit(const LoadingAppState(TR_REQUEST_NEW_DEVICE));
+          final hwDevice = locator<RuntimeDevice>();
+          final DeviceInfo device = await fetcher.requestDeviceByCode(code, hwDevice.name);
+          devices.add(device);
+        }
+
+        device = devices[0].id;
       } catch (error) {
         _emit(ErrorAppState(error));
         return;
       }
-
-      if (devices.isEmpty) {
-        _emit(const LoadingAppState(TR_REQUEST_NEW_DEVICE));
-        try {
-          final hwDevice = locator<RuntimeDevice>();
-          final DeviceInfo device = await fetcher.requestDeviceByCode(code, hwDevice.name);
-          devices.add(device);
-        } catch (error) {
-          _emit(ErrorAppState(error));
-          return;
-        }
-      }
-
-      if (devices.isNotEmpty) {
-        device = devices[0].id;
-      }
     }
 
-    if (device == null) {
-      _emit(ErrorAppState(ErrorHttp(401, TR_PLEASE_CREATE_DEVICE, null)));
-      return;
-    }
+    _emit(const LoadingAppState(TR_AUTHORIZATION));
+    tryToLoginByCode(device, 1);
+  }
 
-    try {
-      _emit(const LoadingAppState(TR_AUTHORIZATION));
-      final tokens = await fetcher.loginByCode(code, device);
-      if (tokens) {
-        _emit(ErrorAppState(ErrorHttp(401, TR_ERR_WRONG_CODE, null)));
-        return;
+  void tryToLoginByCode(String device, int redirect) {
+    final res = fetcher.loginByCode(code, device);
+    res.then((tokens) {
+      if (tokens.origin != null) {
+        fetcher.setHost(tokens.origin!);
       }
-
-      final info = await fetcher.getServerInfo();
-      _emit(AuthenticatedAppState(fetcher.directHost, device, info));
-      start();
-    } catch (error) {
+      moveOnHome(device);
+    }, onError: (error) {
       _emit(ErrorAppState(error));
-    }
+    });
   }
 
   void launchPolicy(String host) {
-    final Uri? url = Uri.tryParse('$host/#/privacy');
-    if (url != null) {
-      canLaunchUrl(url).then((value) {
-        if (value) {
-          launchUrl(url);
-        }
-      });
-    }
+    fetcher.launchPolicy(host);
   }
 
   void launchTerms(String host) {
-    final Uri? url = Uri.tryParse('$host/#/terms');
-    if (url != null) {
-      canLaunchUrl(url).then((value) {
-        if (value) {
-          launchUrl(url);
-        }
-      });
-    }
+    fetcher.launchTerms(host);
   }
 
   void _emit(AppState newState) {

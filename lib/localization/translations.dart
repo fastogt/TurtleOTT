@@ -128,7 +128,8 @@ const String TR_BUY_CHANNEL = "Buy this channel to watch content";
 //error
 const String TR_INVALID_INPUT = 'Invalid input';
 const String TR_ALREADY_HAVE_SIGNED_UP = "Welcome Back! Your Account is Already Registered";
-const String TR_CONNECTION_SIN_UP = 'Connection Sign-Up';
+const String TR_CONNECTION_SIGN_UP = 'Connection Sign-Up';
+const String TR_GET_SERVER_INFO = "Get server info";
 const String TR_ALREADY_HAVE_ACCOUNT = 'Already have an Account?';
 const String TR_SIGN_UP = 'Sign up';
 const String TR_FIRST_NAME = 'First name';
