@@ -4,7 +4,6 @@ import 'package:crocott_dart/types.dart';
 import 'package:fastotv_dart/commands_info.dart';
 import 'package:fastotv_dart/profile.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_common/flutter_common.dart';
 
 import 'package:turtleott/epg_manager.dart';
