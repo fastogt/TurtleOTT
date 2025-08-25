@@ -4,7 +4,7 @@ import 'package:flutter_common/flutter_common.dart';
 import 'package:flutter_fastotv_common/base/vods/vod_description.dart';
 import 'package:intl/intl.dart';
 import 'package:player/common/controller.dart';
-import 'package:responsive_builder/responsive_builder.dart';
+import 'package:responsive_builder2/responsive_builder2.dart';
 import 'package:turtleott/base/bloc/content_bloc.dart';
 import 'package:turtleott/base/channels/episode_stream.dart';
 import 'package:turtleott/base/channels/istream.dart';

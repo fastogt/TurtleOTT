@@ -2,7 +2,7 @@ import 'package:fastotv_dart/commands_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_common/flutter_common.dart';
 import 'package:player/common/controller.dart';
-import 'package:responsive_builder/responsive_builder.dart';
+import 'package:responsive_builder2/responsive_builder2.dart';
 import 'package:turtleott/base/bloc/content_bloc.dart';
 import 'package:turtleott/base/channels/vod_stream.dart';
 import 'package:turtleott/base/mobile_preview_icon.dart';
