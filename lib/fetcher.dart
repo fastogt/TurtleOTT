@@ -22,13 +22,13 @@ class CrocOTTImpl extends ICrocOTTPlayer {
         arch: device.arch,
         ramTotal: 0,
         ramFree: 0);
-    final project = DeviceProject(name: projectName(), version: projectVersion());
+    final project = ProjectInfo(project: projectName(), version: projectVersion());
     return ClientInfo(id: did, project: project, os: os, cpuBrand: device.cpuBrand);
   }
 }
 
 class Fetcher extends CrocOTTAPI {
-  Fetcher({required ICrocOTTPlayer impl}) : super(impl: impl);
+  Fetcher({required super.impl});
 
   Future<bool> launchExternalUrl(String url, {LaunchMode mode = LaunchMode.platformDefault}) {
     return launchUrlString(url, mode: mode);
