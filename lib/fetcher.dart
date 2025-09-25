@@ -8,10 +8,9 @@ import 'package:url_launcher/url_launcher_string.dart';
 
 class CrocOTTImpl extends ICrocOTTPlayer {
   CrocOTTImpl(
-      {required String host,
-      OnTokenChangedCallback? onTokenChanged,
-      OnNeedHelpCallback? onNeedHelp})
-      : super(host: host, onTokenChanged: onTokenChanged, onNeedHelp: onNeedHelp);
+      {required super.host,
+      super.onTokenChanged,
+      super.onNeedHelp});
 
   @override
   ClientInfo getDeviceInfo(String did) {
@@ -20,8 +19,8 @@ class CrocOTTImpl extends ICrocOTTPlayer {
         name: PlatformType.fromString(device.platform),
         version: device.version,
         arch: device.arch,
-        ramTotal: 0,
-        ramFree: 0);
+        ramTotalBytes: device.ramTotalMB,
+        ramFreeBytes: device.ramFreeMB);
     final project = ProjectInfo(project: projectName(), version: projectVersion());
     return ClientInfo(id: did, project: project, os: os, cpuBrand: device.cpuBrand);
   }
